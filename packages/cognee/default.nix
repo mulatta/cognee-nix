@@ -45,6 +45,7 @@
   fakeredis,
   diskcache,
   aiolimiter,
+  mem0,
 }:
 buildPythonPackage rec {
   pname = "cognee";
@@ -113,6 +114,7 @@ buildPythonPackage rec {
     fakeredis
     diskcache
     aiolimiter
+    mem0
   ];
 
   # Tests require external services
