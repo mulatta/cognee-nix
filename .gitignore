@@ -1,0 +1,10 @@
+# Cognee data directories
+.cognee_system/
+.cognee_data/
+
+# Nix
+result
+result-*
+
+# direnv
+.direnv/
