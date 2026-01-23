@@ -57,11 +57,15 @@
   playwright ? null,
   beautifulsoup4 ? null,
   lxml ? null,
+  mcp ? null,
+  fastmcp ? null,
+  httpx ? null,
   # feature flags
   withNeo4j ? false,
   withChromadb ? false,
   withPostgres ? false,
   withScraping ? false,
+  withMcp ? false,
 }:
 buildPythonPackage rec {
   pname = "cognee";
@@ -147,6 +151,11 @@ buildPythonPackage rec {
     playwright
     beautifulsoup4
     lxml
+  ]
+  ++ lib.optionals withMcp [
+    mcp
+    fastmcp
+    httpx
   ];
 
   # Tests require external services
@@ -172,6 +181,11 @@ buildPythonPackage rec {
         beautifulsoup4
         lxml
       ];
+      mcp = [
+        mcp
+        fastmcp
+        httpx
+      ];
     };
   };
 
@@ -185,12 +199,14 @@ buildPythonPackage rec {
         cognee.override { withChromadb = true; }
         cognee.override { withPostgres = true; }
         cognee.override { withScraping = true; }
+        cognee.override { withMcp = true; }
 
       Or access optional-dependencies directly:
         cognee.optional-dependencies.neo4j
         cognee.optional-dependencies.chromadb
         cognee.optional-dependencies.postgres
         cognee.optional-dependencies.scraping
+        cognee.optional-dependencies.mcp
     '';
     homepage = "https://github.com/topoteretes/cognee";
     changelog = "https://github.com/topoteretes/cognee/releases/tag/v${version}";
