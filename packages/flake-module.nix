@@ -15,11 +15,13 @@
       cognee-mcp = pythonPackages.callPackage ./cognee-mcp {
         inherit cognee;
       };
+      cognee-frontend = pkgs.callPackage ./cognee-frontend { };
     in
     {
       packages = {
         inherit
           cognee
+          cognee-frontend
           cognee-mcp
           fastapi-users
           fastapi-users-db-sqlalchemy
