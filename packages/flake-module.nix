@@ -9,9 +9,8 @@
       fastapi-users-db-sqlalchemy = pythonPackages.callPackage ./fastapi-users-db-sqlalchemy {
         inherit fastapi-users;
       };
-      mem0 = pythonPackages.callPackage ./mem0 { };
       cognee = pythonPackages.callPackage ./cognee {
-        inherit fastapi-users-db-sqlalchemy mem0;
+        inherit fastapi-users-db-sqlalchemy;
       };
     in
     {
@@ -20,7 +19,6 @@
           cognee
           fastapi-users
           fastapi-users-db-sqlalchemy
-          mem0
           ;
       };
     };

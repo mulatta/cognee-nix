@@ -2,72 +2,68 @@
   lib,
   buildPythonPackage,
   fetchFromGitHub,
-  pythonRelaxDepsHook,
-  # build system
+
+  # build-system
   hatchling,
+
   # dependencies
+  aiofiles,
+  aiohttp,
+  aiolimiter,
+  aiosqlite,
+  alembic,
+  diskcache,
+  fakeredis,
+  fastembed,
+  fastapi,
+  fastapi-users-db-sqlalchemy,
+  filetype,
+  gunicorn,
+  instructor,
+  jinja2,
+  kuzu,
+  lancedb,
+  limits,
+  litellm,
+  mistralai,
+  nbformat,
+  networkx,
+  numpy,
+  onnxruntime,
   openai,
-  python-dotenv,
   pydantic,
   pydantic-settings,
-  typing-extensions,
-  numpy,
-  sqlalchemy,
-  aiosqlite,
-  tiktoken,
-  litellm,
-  instructor,
-  filetype,
-  aiohttp,
-  aiofiles,
-  rdflib,
-  pypdf,
-  jinja2,
-  lancedb,
-  nbformat,
-  alembic,
-  limits,
-  fastapi,
-  python-multipart,
-  fastapi-users-db-sqlalchemy,
-  structlog,
-  pympler,
-  onnxruntime,
   pylance,
-  kuzu,
-  fastembed,
-  networkx,
-  uvicorn,
-  gunicorn,
-  websockets,
-  mistralai,
+  pympler,
+  pypdf,
+  python-dotenv,
+  python-multipart,
+  rdflib,
+  sqlalchemy,
+  structlog,
   tenacity,
-  fakeredis,
-  diskcache,
-  aiolimiter,
-  mem0,
-  # optional dependencies
-  neo4j ? null,
-  chromadb ? null,
-  pypika ? null,
-  psycopg2 ? null,
-  pgvector ? null,
-  asyncpg ? null,
-  protego ? null,
-  playwright ? null,
-  beautifulsoup4 ? null,
-  lxml ? null,
-  mcp ? null,
-  fastmcp ? null,
-  httpx ? null,
-  # feature flags
-  withNeo4j ? false,
-  withChromadb ? false,
-  withPostgres ? false,
-  withScraping ? false,
-  withMcp ? false,
+  tiktoken,
+  typing-extensions,
+  uvicorn,
+  websockets,
+
+  # optional-dependencies
+  asyncpg,
+  beautifulsoup4,
+  chromadb,
+  fastmcp,
+  httpx,
+  lxml,
+  mcp,
+  neo4j,
+  pgvector,
+  playwright,
+  protego,
+  psycopg2,
+  pypika,
 }:
-buildPythonPackage rec {
+
+buildPythonPackage (finalAttrs: {
   pname = "cognee";
   version = "0.5.1";
   pyproject = true;
@@ -75,13 +71,11 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "topoteretes";
     repo = "cognee";
-    rev = "v${version}";
+    tag = "v${finalAttrs.version}";
     hash = "sha256-4s3DOvHsAHHoyivwcMX7JJNzNzueAE/qdrdd1w6HGkc=";
   };
 
   build-system = [ hatchling ];
-
-  nativeBuildInputs = [ pythonRelaxDepsHook ];
 
   pythonRelaxDeps = [
     "fastembed"
@@ -95,122 +89,81 @@ buildPythonPackage rec {
   ];
 
   dependencies = [
+    aiofiles
+    aiohttp
+    aiolimiter
+    aiosqlite
+    alembic
+    diskcache
+    fakeredis
+    fastembed
+    fastapi
+    fastapi-users-db-sqlalchemy
+    filetype
+    gunicorn
+    instructor
+    jinja2
+    kuzu
+    lancedb
+    limits
+    litellm
+    mistralai
+    nbformat
+    networkx
+    numpy
+    onnxruntime
     openai
-    python-dotenv
     pydantic
     pydantic-settings
-    typing-extensions
-    numpy
-    sqlalchemy
-    aiosqlite
-    tiktoken
-    litellm
-    instructor
-    filetype
-    aiohttp
-    aiofiles
-    rdflib
-    pypdf
-    jinja2
-    lancedb
-    nbformat
-    alembic
-    limits
-    fastapi
-    python-multipart
-    fastapi-users-db-sqlalchemy
-    structlog
-    pympler
-    onnxruntime
     pylance
-    kuzu
-    fastembed
-    networkx
-    uvicorn
-    gunicorn
-    websockets
-    mistralai
+    pympler
+    pypdf
+    python-dotenv
+    python-multipart
+    rdflib
+    sqlalchemy
+    structlog
     tenacity
-    fakeredis
-    diskcache
-    aiolimiter
-    mem0
-  ]
-  ++ lib.optionals withNeo4j [ neo4j ]
-  ++ lib.optionals withChromadb [
-    chromadb
-    pypika
-  ]
-  ++ lib.optionals withPostgres [
-    psycopg2
-    pgvector
-    asyncpg
-  ]
-  ++ lib.optionals withScraping [
-    protego
-    playwright
-    beautifulsoup4
-    lxml
-  ]
-  ++ lib.optionals withMcp [
-    mcp
-    fastmcp
-    httpx
+    tiktoken
+    typing-extensions
+    uvicorn
+    websockets
   ];
 
-  # Tests require external services
+  optional-dependencies = {
+    chromadb = [
+      chromadb
+      pypika
+    ];
+    mcp = [
+      fastmcp
+      httpx
+      mcp
+    ];
+    neo4j = [ neo4j ];
+    postgres = [
+      asyncpg
+      pgvector
+      psycopg2
+    ];
+    scraping = [
+      beautifulsoup4
+      lxml
+      playwright
+      protego
+    ];
+  };
+
+  # Tests require external services (databases, LLM APIs)
   doCheck = false;
 
   pythonImportsCheck = [ "cognee" ];
 
-  passthru = {
-    optional-dependencies = {
-      neo4j = [ neo4j ];
-      chromadb = [
-        chromadb
-        pypika
-      ];
-      postgres = [
-        psycopg2
-        pgvector
-        asyncpg
-      ];
-      scraping = [
-        protego
-        playwright
-        beautifulsoup4
-        lxml
-      ];
-      mcp = [
-        mcp
-        fastmcp
-        httpx
-      ];
-    };
-  };
-
   meta = {
+    changelog = "https://github.com/topoteretes/cognee/releases/tag/${finalAttrs.src.tag}";
     description = "Memory management for AI applications and AI agents";
-    longDescription = ''
-      Cognee is a memory management system for AI applications and AI agents.
-
-      Optional features can be enabled via override:
-        cognee.override { withNeo4j = true; }
-        cognee.override { withChromadb = true; }
-        cognee.override { withPostgres = true; }
-        cognee.override { withScraping = true; }
-        cognee.override { withMcp = true; }
-
-      Or access optional-dependencies directly:
-        cognee.optional-dependencies.neo4j
-        cognee.optional-dependencies.chromadb
-        cognee.optional-dependencies.postgres
-        cognee.optional-dependencies.scraping
-        cognee.optional-dependencies.mcp
-    '';
     homepage = "https://github.com/topoteretes/cognee";
-    changelog = "https://github.com/topoteretes/cognee/releases/tag/v${version}";
     license = lib.licenses.asl20;
-    maintainers = [ ];
+    maintainers = with lib.maintainers; [ mulatta ];
   };
-}
+})
