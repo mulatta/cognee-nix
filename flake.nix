@@ -21,6 +21,7 @@
         ./dev/formatter.nix
         ./dev/shell.nix
         ./packages/flake-module.nix
+        ./overlays/flake-module.nix
       ];
     };
 }
